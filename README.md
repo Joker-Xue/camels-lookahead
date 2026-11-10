@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 `reproduce.sh` lists the steps. Training a run takes about 7.5 h on a single 8 GB NVIDIA GPU when three runs share it. `run_all.py` uses CUDA if available and otherwise Apple MPS. To run `train.py` directly, pass `--device cuda|mps|cpu` (its default is `mps`). Runs resume from the last completed epoch after an interruption, with all random-number-generator states restored.
 
-**Checking the statistics without retraining.** The test-period predictions of all 47 runs (`<split>_<config>_<seed>.npz`, array `pred` of shape basins × days, plus a JSON with hyperparameters and the training log) are archived at [ZENODO DOI TO BE ADDED]. Unpack them into `results/runs/`, run steps 1–3 of `reproduce.sh` (needed for the observations), then `python code/analyze.py` and `python code/analyze_g.py`. The outputs should match `results/analysis.json` and `results/analysis_g.json` exactly. `SHA256SUMS` in the archive lists the checksum of every prediction file.
+**Checking the statistics without retraining.** The test-period predictions of all 47 runs (`<split>_<config>_<seed>.npz`, array `pred` of shape basins × days, plus a JSON with hyperparameters and the training log) are archived on Zenodo, https://doi.org/10.5281/zenodo.24109191. Unpack them into `results/runs/`, run steps 1–3 of `reproduce.sh` (needed for the observations), then `python code/analyze.py` and `python code/analyze_g.py`. The outputs should match `results/analysis.json` and `results/analysis_g.json` exactly. `SHA256SUMS` in the archive lists the checksum of every prediction file.
 
 ## Pre-registration
 
