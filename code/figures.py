@@ -161,7 +161,62 @@ def fig4_basins():
     return {k: (round(float(v.abs().median()), 4), round(float((v.abs() > .01).mean()), 3)) for k, v in [("ens_AB", d), ("single_AB", single), ("seed_noise", noise)]}
 
 
+def graphical_abstract():
+    """EMS 要求的图形摘要：横版，宽 ≥1328 px，13 cm 宽时可读。"""
+    r = json.loads((RES / "analysis.json").read_text())
+    g = json.loads((RES / "analysis_g.json").read_text())
+    fig = plt.figure(figsize=(7.5, 3.3))
+    fig.text(0.01, 0.96, "Does look-ahead in CAMELS climate attributes inflate LSTM benchmarks?",
+             fontsize=11, weight="bold", color=INK, va="top")
+    ax = fig.add_axes([0.03, 0.22, 0.33, 0.58])
+    for sp, y, tr, te in [("S1 (benchmark)", 2.0, (1999.75, 2008.75), (1989.75, 1999.75)),
+                          ("S2 (forward)", 1.0, (1989.75, 1999.75), (1999.75, 2009.75))]:
+        ax.add_patch(Rectangle((tr[0], y - .2), tr[1] - tr[0], .4, color=BLUE, lw=0))
+        ax.add_patch(Rectangle((te[0], y - .2), te[1] - te[0], .4, color=ORANGE, lw=0))
+        ax.text(np.mean(tr), y, "train", ha="center", va="center", color="white", fontsize=8.5)
+        ax.text(np.mean(te), y, "test", ha="center", va="center", color="white", fontsize=8.5)
+        ax.text(1989.75, y + .3, sp, fontsize=8.5, color=INK, va="bottom")
+    ax.add_patch(Rectangle((1989.75, 0.05), 20, .3, facecolor="none", edgecolor=INK, lw=1, hatch="////"))
+    ax.text(1999.75, -0.12, "official climate-attribute window\ncontains every test period",
+            ha="center", va="top", fontsize=8.5, color=INK)
+    ax.set_xlim(1989, 2010.5)
+    ax.set_ylim(-0.75, 2.75)
+    ax.set_yticks([])
+    ax.spines["left"].set_visible(False)
+    ax.set_xticks([1990, 2000, 2010])
+    ax.tick_params(labelsize=8)
+    rows = [("Official − training-period\nattributes, S1 (primary)", r["S1"]["compare"]["A-B:nse"], True),
+            ("Official − training-period\nattributes, S2", r["S2"]["compare"]["A-B:nse"], False),
+            ("Test-period runoff signatures\n(positive control*)", g["compare"]["G-F:nse"], False)]
+    bx = fig.add_axes([0.665, 0.22, 0.31, 0.58])
+    bx.axvspan(-.01, .01, color="#f0efec", lw=0)
+    for x in (-.01, .01):
+        bx.axvline(x, color=INK2, lw=.8, ls="--")
+    bx.axvline(0, color=INK2, lw=.6)
+    for y, (lab, c, prim) in enumerate(rows):
+        bx.plot([c["lo"], c["hi"]], [y, y], color=BLUE, lw=2.5, solid_capstyle="round")
+        bx.plot(c["median"], y, "D" if prim else "o", color=BLUE, ms=7, mec="white", mew=1)
+    bx.set_yticks(range(len(rows)))
+    bx.set_yticklabels([x[0] for x in rows], fontsize=8)
+    bx.invert_yaxis()
+    bx.set_xlim(-.015, .015)
+    bx.set_xticks([-.01, 0, .01])
+    bx.tick_params(labelsize=8)
+    bx.set_xlabel("Δ median NSE (95% CI); band = ±0.01 margin", fontsize=8)
+    fig.text(0.975, 0.85, "Effect ≈ 0.002 NSE; seed-to-seed noise ≈ 0.023",
+             fontsize=8.5, color=INK, va="center", ha="right")
+    fig.text(0.01, 0.015, "531 CAMELS-US basins · 47 LSTM runs · pre-registered equivalence test · *exploratory control", fontsize=7, color=INK2)
+    for ext in ["pdf", "png"]:
+        fig.savefig(OUT / f"graphical_abstract.{ext}", dpi=300)
+    plt.close(fig)
+
+
 if __name__ == "__main__":
+    import sys
+    if sys.argv[1:] == ["ga"]:
+        graphical_abstract()
+        raise SystemExit
+    graphical_abstract()
     fig1_design()
     fig2_shift()
     fig3_forest()
