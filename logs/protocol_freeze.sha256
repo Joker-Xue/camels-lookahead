@@ -1,0 +1,11 @@
+8afa5efaee1ec53f48dcbf23610efbba953d9b74dd1afe39a9169a57f4635759  PROTOCOL.md
+f95e69ee9a91e644c261ca6367914156faf3a9a5bcb9a53f75a650a853d1a616  code/build_attrs.py
+5596f038435dc6ea543fbc3f2c666a9f705463cb9433b34751fd56fb003b9378  code/build_dataset.py
+c9f86d2c4a5f92d9d0623e1f2b444c4f34e7ab45b04950e8129b1c2eef8be582  code/camels_attrs.py
+0c2852436f51c841e72ddf9a3ec487feb3e7c144a9572fb1a5e1b5403fd87b18  code/experiment.py
+3dce2313f7f95d789ad84d7f2f642673ded76dee524349b59f499b6eefc9df26  code/metrics.py
+d6bae632ba23868ea8fff460bad7da4ed32003f1e6293ba4dd5786d72b976099  code/run_all.py
+d68a8e1b0aa0c1921079926326329d6512fc98187ea6594c0891fd1ce5e8c165  code/train.py
+6e595afb385f4e69dff7c3f0792d96acbefbb9ef0ebce124abd1c12721ac2cbf  code/validate_attrs.py
+Mon Nov  2 12:06:04 CST 2026
+3.13.12 | packaged by Anaconda, Inc. | (main, Feb 24 2026, 16:07:20) [Clang 20.1.8 ] 2.11.0 2.4.6 3.0.2

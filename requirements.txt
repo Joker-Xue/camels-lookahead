@@ -1,0 +1,6 @@
+# Versions used for all reported runs (Python 3.13)
+torch==2.9.1
+numpy==2.4.6
+pandas==3.0.2
+scipy>=1.17  # training env: 1.18.1; analysis was run with 1.17.1
+matplotlib>=3.9

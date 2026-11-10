@@ -1,0 +1,19 @@
+aa374e472d11f091b4ad70688f9339842c2f514343026fc3326ed8dbe6242606  PROTOCOL.md
+ebf08a6d2546586031943f22798a30e6dfc168805d0faf957bbd3282bba27aba  code/analyze.py
+f95e69ee9a91e644c261ca6367914156faf3a9a5bcb9a53f75a650a853d1a616  code/build_attrs.py
+5596f038435dc6ea543fbc3f2c666a9f705463cb9433b34751fd56fb003b9378  code/build_dataset.py
+c9f86d2c4a5f92d9d0623e1f2b444c4f34e7ab45b04950e8129b1c2eef8be582  code/camels_attrs.py
+0c2852436f51c841e72ddf9a3ec487feb3e7c144a9572fb1a5e1b5403fd87b18  code/experiment.py
+3dce2313f7f95d789ad84d7f2f642673ded76dee524349b59f499b6eefc9df26  code/metrics.py
+f1aab0d828f18c05a3a74df6d5a2a260b670517445c13345cc43355d56ddff49  code/run_all.py
+d68a8e1b0aa0c1921079926326329d6512fc98187ea6594c0891fd1ce5e8c165  code/train.py
+6e595afb385f4e69dff7c3f0792d96acbefbb9ef0ebce124abd1c12721ac2cbf  code/validate_attrs.py
+Tue Nov  3 20:51:47 CST 2026
+3.13.15 2.9.1+cu128 12.8 91002 NVIDIA GeForce RTX 5060 2.4.6 3.0.2 1.18.1
+# Tue Nov  3 21:33:12 CST 2026 追加：train.py 加入逐轮断点续跑（不改变训练过程，CPU 上验证中断续跑与连续训练的预测逐位一致）；新增 pause.ps1、resume.ps1
+4b5a5a53f3c36033023772d0c5ddf5bda663f5e7155ae0ef422a874a227af8bc  code/train.py
+182c673b5fd0a62ffdfc35f3fe1685b7dedc58ec28e3ec93137aa21f7bd4998a  code/pause.ps1
+8ff12948e488873dffeff9ebdbf5ef33250b39f7201593cff100a3493cf5671d  code/resume.ps1
+# Wed Nov  4 08:54:19 CST 2026 修复：断点恢复时随机数状态须放回 CPU；运行日志改为追加写入
+6d3cc6f58b40d338c74e35e942fe45f6fb9debbe9e62cd443755105e73748e7e  code/train.py
+b63c6eb2fc256449c0deb4a782138942c478189c730f9fbdec44e6a95e9746b0  code/run_all.py

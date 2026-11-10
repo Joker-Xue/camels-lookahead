@@ -1,0 +1,21 @@
+# 大文件与可再生成的数据（见 README）
+data/raw/*
+!data/raw/basin_list_531.txt
+data/processed/
+results/runs/
+results/ckpt/
+results/pilot_h64/
+results/pilot_h128/
+results/excluded_v1_h128/
+# 运行期产物
+logs/run_*.log
+logs/pilot_*.log
+__pycache__/
+*.pyc
+.DS_Store
+# 个人文档、本地运维脚本与投稿稿件（不公开）
+研究计划.md
+paper/
+code/pause.ps1
+code/resume.ps1
+release/
