@@ -84,17 +84,20 @@ def fig2_shift():
 def fig3_forest():
     r = json.loads((RES / "analysis.json").read_text())
     g = json.loads((RES / "analysis_g.json").read_text())
+    sd = json.loads((RES / "analysis_seeds.json").read_text())  # 偏离 3：流域 × 种子两层区间
     rows = []
     lab = {"A-B": "A − B  official vs training-period (primary)", "A-C": "A − C  official vs none",
-           "D-B": "D − B  test-period vs training-period", "E-F": "E − F  pre-registered positive control"}
+           "D-B": "D − B  test-period vs training-period", "E-F": "E − F  pre-specified positive control"}
     for sp in ["S1", "S2"]:
         for k in ["A-B", "A-C", "D-B", "E-F"]:
             if f"{k}:nse" in r[sp]["compare"]:
                 c = r[sp]["compare"][f"{k}:nse"]
-                rows.append((sp, lab[k], c["median"], c["lo"], c["hi"], k == "A-B"))
+                t = sd[sp]["compare"][k]
+                rows.append((sp, lab[k], c["median"], c["lo"], c["hi"], k == "A-B", t["lo"], t["hi"]))
         if sp == "S1":
             c = g["compare"]["G-F:nse"]
-            rows.append(("S1", "G − F  strengthened positive control*", c["median"], c["lo"], c["hi"], False))
+            t = sd["S1"]["compare"]["G-F"]
+            rows.append(("S1", "G − F  strengthened positive control*", c["median"], c["lo"], c["hi"], False, t["lo"], t["hi"]))
     fig, ax = plt.subplots(figsize=(7.0, 3.3))
     ax.axvspan(-.01, .01, color="#f0efec", lw=0)
     for x in [-.01, .01]:
@@ -102,11 +105,14 @@ def fig3_forest():
     ax.axvline(0, color=INK2, lw=.6)
     y = 0
     ticks, names = [], []
-    for i, (sp, name, m, lo, hi, prim) in enumerate(rows):
+    for i, (sp, name, m, lo, hi, prim, lo2, hi2) in enumerate(rows):
         if i and rows[i - 1][0] != sp:
             y += .7
         col = BLUE if sp == "S1" else ORANGE
-        ax.plot([lo, hi], [y, y], color=col, lw=2, solid_capstyle="round")
+        ax.plot([lo2, hi2], [y, y], color=col, lw=.9, alpha=.55, solid_capstyle="butt")
+        ax.plot([lo2, lo2], [y - .15, y + .15], color=col, lw=.9, alpha=.55)
+        ax.plot([hi2, hi2], [y - .15, y + .15], color=col, lw=.9, alpha=.55)
+        ax.plot([lo, hi], [y, y], color=col, lw=2.6, solid_capstyle="round")
         ax.plot(m, y, "D" if prim else "o", color=col, ms=6, mec="white", mew=1)
         ax.text(.0215, y, f"{m:+.4f} [{lo:+.4f}, {hi:+.4f}]", va="center", fontsize=7, color=INK2)
         ticks.append(y)
@@ -117,7 +123,7 @@ def fig3_forest():
     ax.invert_yaxis()
     ax.set_xlim(-.015, .036)
     ax.set_xticks([-.01, -.005, 0, .005, .01, .015, .02])
-    ax.set_xlabel("Median ΔNSE across 531 basins (ensemble), 95% bootstrap CI")
+    ax.set_xlabel("Median ΔNSE across 531 basins (ensemble); thick: 95% CI over basins, thin: over basins and seeds")
     ax.text(0, -.9, "equivalence margin ±0.01", ha="center", fontsize=7, color=INK2)
     save(fig, "fig3_forest")
 
@@ -185,15 +191,19 @@ def graphical_abstract():
     ax.spines["left"].set_visible(False)
     ax.set_xticks([1990, 2000, 2010])
     ax.tick_params(labelsize=8)
-    rows = [("Official − training-period\nattributes, S1 (primary)", r["S1"]["compare"]["A-B:nse"], True),
-            ("Official − training-period\nattributes, S2", r["S2"]["compare"]["A-B:nse"], False),
-            ("Test-period runoff signatures\n(positive control*)", g["compare"]["G-F:nse"], False)]
+    sd = json.loads((RES / "analysis_seeds.json").read_text())
+    rows = [("Official − training-period\nattributes, S1 (primary)", r["S1"]["compare"]["A-B:nse"], True, sd["S1"]["compare"]["A-B"]),
+            ("Official − training-period\nattributes, S2", r["S2"]["compare"]["A-B:nse"], False, sd["S2"]["compare"]["A-B"]),
+            ("Test-period runoff signatures\n(positive control*)", g["compare"]["G-F:nse"], False, sd["S1"]["compare"]["G-F"])]
     bx = fig.add_axes([0.665, 0.22, 0.31, 0.58])
     bx.axvspan(-.01, .01, color="#f0efec", lw=0)
     for x in (-.01, .01):
         bx.axvline(x, color=INK2, lw=.8, ls="--")
     bx.axvline(0, color=INK2, lw=.6)
-    for y, (lab, c, prim) in enumerate(rows):
+    for y, (lab, c, prim, t) in enumerate(rows):
+        bx.plot([t["lo"], t["hi"]], [y, y], color=BLUE, lw=1, alpha=.55)
+        for x in (t["lo"], t["hi"]):
+            bx.plot([x, x], [y - .08, y + .08], color=BLUE, lw=1, alpha=.55)
         bx.plot([c["lo"], c["hi"]], [y, y], color=BLUE, lw=2.5, solid_capstyle="round")
         bx.plot(c["median"], y, "D" if prim else "o", color=BLUE, ms=7, mec="white", mew=1)
     bx.set_yticks(range(len(rows)))
@@ -202,10 +212,10 @@ def graphical_abstract():
     bx.set_xlim(-.015, .015)
     bx.set_xticks([-.01, 0, .01])
     bx.tick_params(labelsize=8)
-    bx.set_xlabel("Δ median NSE (95% CI); band = ±0.01 margin", fontsize=8)
-    fig.text(0.975, 0.85, "Effect ≈ 0.002 NSE; seed-to-seed noise ≈ 0.023",
+    bx.set_xlabel("Δ median NSE, 95% CI\n(thin: incl. seeds; band: ±0.01 margin)", fontsize=8)
+    fig.text(0.975, 0.85, "Effect ≈ 0.002 NSE; inside ±0.01 also with seed variability",
              fontsize=8.5, color=INK, va="center", ha="right")
-    fig.text(0.01, 0.015, "531 CAMELS-US basins · 47 LSTM runs · pre-registered equivalence test · *exploratory control", fontsize=7, color=INK2)
+    fig.text(0.01, 0.015, "531 CAMELS-US basins · 47 LSTM runs · pre-specified equivalence test · *exploratory control", fontsize=7, color=INK2)
     for ext in ["pdf", "png"]:
         fig.savefig(OUT / f"graphical_abstract.{ext}", dpi=300)
     plt.close(fig)

@@ -2,11 +2,11 @@
 
 Code, pre-registration and results for
 
-> Lin, X. (2026). *Does look-ahead in CAMELS climate attributes inflate LSTM streamflow benchmarks? A pre-registered equivalence study.* Manuscript submitted to *Environmental Modelling & Software*.
+> Lin, X. (2026). *Does look-ahead in CAMELS climate attributes inflate LSTM streamflow benchmarks? An equivalence study with a pre-specified protocol.* Manuscript in preparation for *Environmental Modelling & Software*.
 
 The CAMELS-US climate attributes (Addor et al., 2017) are computed over water years 1990–2009, which contains the test period of the standard LSTM benchmark split (Kratzert et al., 2019). This repository trains the benchmark LSTM on 531 basins with official, training-period, test-period or no climate attributes, and measures the effect on test performance against a pre-specified equivalence margin of ±0.01 median NSE.
 
-**Main result (benchmark split, 5-seed ensembles):** official minus training-period attributes, median basin ΔNSE = +0.0024 (95% bootstrap CI 0.0011 to 0.0044). Both positive controls failed their pre-registered criterion. See the paper for interpretation.
+**Main result (benchmark split, 5-seed ensembles):** official minus training-period attributes, median basin ΔNSE = +0.0024 (95% bootstrap CI 0.0011 to 0.0044 over basins; −0.0003 to 0.0055 when seeds are resampled as well). Both positive controls failed their pre-specified criterion. See the paper for interpretation.
 
 ## Contents
 
@@ -59,20 +59,21 @@ pip install -r requirements.txt
 
 **Checking the statistics without retraining.** The test-period predictions of all 47 runs (`<split>_<config>_<seed>.npz`, array `pred` of shape basins × days, plus a JSON with hyperparameters and the training log) are archived on Zenodo, https://doi.org/10.5281/zenodo.24109191. Unpack them into `results/runs/`, run steps 1–3 of `reproduce.sh` (needed for the observations), then `python code/analyze.py` and `python code/analyze_g.py`. The outputs should match `results/analysis.json` and `results/analysis_g.json` exactly. `SHA256SUMS` in the archive lists the checksum of every prediction file.
 
-## Pre-registration
+## Analysis protocol
 
-`PROTOCOL.md` was frozen before any comparison between configurations was computed. Two deviations are recorded at its end:
+`PROTOCOL.md` (Chinese original; English translation in `PROTOCOL_en.md`) was frozen before any comparison between configurations was computed. It was not lodged with a public registry and this repository was made public only after the pre-specified results were known, so the timing of the original protocol rests on the hash records below. Three deviations are recorded at its end:
 
 - Deviation 1, made before any comparison, restored the benchmark model size.
-- Deviation 2, made after the pre-registered results were known, added the exploratory configuration G.
+- Deviation 2, made after the pre-specified results were known, added the exploratory configuration G.
+- Deviation 3, made after an internal review, added a two-level (basins × seeds) bootstrap (`code/analyze_seeds.py`) and the static-pathway controls H (no static attributes) and I (attribute vectors permuted among basins) (`code/build_attrs_h.py`, `code/analyze_h.py`). It was pushed to the public branch `revision/pre-review-fixes` on 24 November 2026, before any H or I run was started.
 
 The hash files in `logs/` record the protocol, code and attribute tables at each stage. To check that the current files match the last recorded state:
 
 ```bash
-grep -v '^#' logs/protocol_freeze_dev2.sha256 | shasum -a 256 -c
+grep -v '^#' logs/protocol_freeze_dev3.sha256 | shasum -a 256 -c
 ```
 
-`code/download_camels.py` and `code/figures.py` were added after that record; neither affects the analysis.
+`code/figures.py` changed after that record (figure layout only) and is expected to fail the check; it does not affect any analysis.
 
 ## Data
 

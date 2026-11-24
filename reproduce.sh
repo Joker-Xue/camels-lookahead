@@ -11,4 +11,5 @@ python code/build_attrs.py                  # 3b. attribute tables for configura
 python code/run_all.py --workers 1          # 4. all training runs (resumable; --workers N for parallel GPU runs)
 python code/analyze.py                      # 5. pre-registered analysis -> results/analysis.json
 python code/analyze_g.py                    #    exploratory G-F (deviation 2) -> results/analysis_g.json
+python code/analyze_seeds.py                #    exploratory basins x seeds bootstrap (deviation 3) -> results/analysis_seeds.json
 python code/figures.py                      # 6. figures -> paper/
