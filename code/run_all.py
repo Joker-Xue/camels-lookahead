@@ -14,6 +14,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "mps"
 RUNS = [("S1", c, s) for s in range(1, 6) for c in "ABCDEF"]
 RUNS += [("S2", c, s) for s in range(1, 4) for c in "ABCD"]
 RUNS += [("S1", "G", s) for s in range(1, 6)]  # 偏离 2：更强的阳性对照（探索性）
+RUNS += [("S1", c, s) for s in range(1, 6) for c in "HI"]  # 偏离 3：静态通路敏感性对照（探索性）
 # 按种子交错，让两个划分都尽早有完整配对
 RUNS.sort(key=lambda r: (r[2], r[0]))
 

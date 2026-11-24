@@ -18,6 +18,11 @@ CONFIGS = {
     "F": {"clim": "train", "hydro": "train"},  # E 的无泄漏对照
     "G": {"clim": "train", "hydro": "test"},   # 偏离 2：更强的阳性对照，只用测试期径流特征（探索性）
 }
+# 偏离 3：静态通路敏感性对照（探索性），属性表由 build_attrs_h.py 从 S1_B 派生，不经 build_attrs.py
+EXTRA_CONFIGS = {
+    "H": "不用任何静态属性",
+    "I": "B 的属性向量在流域之间错排置换",
+}
 DYNAMIC = ["prcp", "srad", "tmax", "tmin", "vp"]
 HP = dict(seq_len=270, hidden=256, layers=2, dropout=0.4, batch=256, epochs=30, clip=1.0,
           lr={0: 1e-3, 11: 5e-4, 21: 1e-4})
